@@ -1,0 +1,18 @@
+{
+  "featuredImage": "",
+  "title": "Building a Custom Theme Toggle in Next.js Without next-themes",
+  "description": "Learn how to build a reusable light/dark theme toggle in Next.js using a custom React Context instead of next-themes, and understand how theme switching works behind the scenes.",
+  "slug": "building-custom-theme-toggle-nextjs",
+  "author": "Amin",
+  "date": "2026-08-01T13:13",
+  "published": false,
+  "categoryTags": [],
+  "techTags": [],
+  "seo": null,
+  "blocks": [
+    {
+      "type": "text",
+      "content": "# Building a Custom Theme Toggle in Next.js Without next-themes\n\nTheme switching is a common feature in modern web applications, but the implementation can vary depending on the project.\n\nInitially, I used **next-themes**, which provides a convenient `useTheme()` hook with properties like `resolvedTheme` and `setTheme`.\n\n```plain\nconst { resolvedTheme, setTheme } = useTheme();\n```\n\nHowever, after moving to Payload CMS, I noticed that Payload ships with its own Theme Provider. Instead of relying on `next-themes`, it exposes a custom React Context.\n\n```plain\nconst { theme, setTheme } = useTheme();\n```\n\nThis means the application no longer depends on `resolvedTheme`; instead, the current theme is stored directly in the context.\n\n\n\n\n## How Theme Switching Works\n\nThe idea is surprisingly simple.\n\nWhen the user clicks the toggle button:\n\n1. Read the current theme.\n2. Decide the next theme.\n3. Save it.\n4. Update the document.\n\n```plain\nconst isDark = theme === \"dark\";\n\nsetTheme(isDark ? \"light\" : \"dark\");\n```\n\nThat's all the toggle actually does.\n\n\n\n\n## What Happens Inside the Theme Provider?\n\nThe provider is responsible for synchronizing three things:\n\n- React state\n- Local Storage\n- The HTML document\n\nWhen a theme changes, it updates the React state:\n\n```plain\nsetThemeState(themeToSet);\n```\n\nThen it stores the preference:\n\n```plain\nlocalStorage.setItem(\"theme\", themeToSet);\n```\n\nFinally, it updates the root HTML element:\n\n```plain\ndocument.documentElement.setAttribute(\n  \"data-theme\",\n  themeToSet\n);\n```\n\nOnce the `data-theme` attribute changes, your CSS (or Tailwind setup) can react immediately.\n\nExample:\n\n```plain\n<html data-theme=\"dark\">\n```\n\nor\n\n```plain\n<html data-theme=\"light\">\n```\n\n\n\n\n## Why Store the Theme?\n\nWithout Local Storage, every page refresh would reset the user's preference.\n\nSaving it allows the application to restore the same theme when the user returns.\n\n\n\n\n## Why Wait for Mount?\n\nOn the server, the browser APIs don't exist.\n\nThat means values such as:\n\n- `window`\n- `localStorage`\n- `document`\n\nare unavailable during server rendering.\n\nFor that reason, many implementations wait until the component has mounted before reading the theme.\n\nThis prevents hydration mismatches between the server-rendered HTML and the client.\n\n\n\n\n## Why a Context?\n\nUsing a React Context keeps the theme centralized.\n\nInstead of passing props through multiple components, any component in the application can simply call:\n\n```plain\nconst { theme, setTheme } = useTheme();\n```\n\nThis makes the theme system reusable and easy to maintain.\n\n\n\n\n## Final Thoughts\n\nA theme toggle may look like a simple button, but behind it are several important React concepts:\n\n- Context API\n- Client Components\n- State Management\n- Local Storage\n- Hydration\n- DOM synchronization\n\nUnderstanding these concepts makes it much easier to build custom theme systems without relying on external libraries."
+    }
+  ]
+}
