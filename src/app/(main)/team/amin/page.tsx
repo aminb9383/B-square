@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     lastName: "Bagheri",
     images: [
       {
-        url: "/images/mePic.jpg",
+        url: "/images/Meta-data-pic.png",
         width: 500,
         height: 500,
         alt: "Amin Bagheri - Frontend Developer & Video Editor",
